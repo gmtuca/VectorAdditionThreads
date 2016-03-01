@@ -69,7 +69,7 @@ public class Demo {
 
         long endTime = System.nanoTime();
 
-        System.out.println(endTime - startTime);
+        System.out.println(1000000000.0/(endTime - startTime));
 
         return result;
     }
