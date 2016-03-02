@@ -1,0 +1,66 @@
+\documentclass{article}
+\usepackage{graphicx}
+\usepackage{listings}
+\usepackage{color}
+
+\definecolor{dkgreen}{rgb}{0,0.6,0}
+\definecolor{gray}{rgb}{0.5,0.5,0.5}
+\definecolor{mauve}{rgb}{0.58,0,0.82}
+
+\lstset{frame=tb,
+  language=Java,
+  aboveskip=3mm,
+  belowskip=3mm,
+  showstringspaces=false,
+  columns=flexible,
+  basicstyle={\small\ttfamily},
+  numbers=none,
+  numberstyle=\tiny\color{gray},
+  keywordstyle=\color{blue},
+  commentstyle=\color{dkgreen},
+  stringstyle=\color{mauve},
+  breaklines=true,
+  breakatwhitespace=true,
+  tabsize=3
+}
+
+\graphicspath{ {out/} }
+
+\title{Analysis of Vector Addition with Threads}
+\date{02-03-2016}
+\author{Arthur Ceccotti - 8544173}
+
+\begin{document}
+  \maketitle
+
+  I have written an implementation of addition of two vectors of random contents using Java.
+  In order to assure correctness of the program, I approached development using the Test Driven Agile methodology with JUnit tests (attached on the deliverables).
+
+  Upon completing the application, I continued by evaluating its performance, running it multiple times with different parameters (number of threads and vector size).
+  By attempting to soften intermittent performance drops/spikes, the program was run 10 times, allowing the gathering of average values.
+
+  At first I thought the increase of threads, given constant vector size, would result on a linear increase of performance. Because each thread has equal load (with a maximum difference of one), vector addition with 4 threads would ideally run twice faster than that with 2 threads of same size.
+
+  This would certainly not be the case for small vector inputs, given that thread initialisation would be a large overhead.
+  Another issue would be executing the program on a single core machine, as threads would never run \textit{truly in parallel} and context switching would be an additinal cost.
+  
+  The following image describes the performance decrease given increase of number of threads for a small problem size of 10,000 elements on the machine \textit{mcore48.cs.man.ac.uk}*. I evaluate this to occur mostly due to the thread initialisation cost. As we can see, the program performs much better with a single thread for this problem size, which means it is quicker to do the whole vector addition sequentially, rather than spending a long time spawning threads which will die after doing few operations.
+
+  \centerline{\includegraphics[width=\textwidth]{10000}}
+  
+  For larger problem sizes (\textgreater1,000,000), thread initialization of a few milliseconds starts becoming insignificant compared to the lifetime of each thread.
+  The following plot describes the run of my program for the vector size of 10,000,000 with variable threads, where such performance increase is clearly visible.
+
+  This now shows how advantageous multithreaded programming can be for large input problems when few data dependencies are present.
+
+  \centerline{\includegraphics[width=\textwidth]{10000000}}
+
+  *Dell/AMD quad 12-core (48 cores total), each with specs:\\
+  model name: AMD Opteron(tm) Processor 6174 \\
+  clock speed: 2.2 GHZ \\
+  cache size: 512 KB \\
+
+  \lstinputlisting{src/VectorAdder.java}
+  \lstinputlisting{src/VectorAdderThread.java}
+  \lstinputlisting{src/VectorAdderTest.java}
+\end{document}
