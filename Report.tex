@@ -40,7 +40,7 @@
   Upon completing the application, I continued by evaluating its performance, running it multiple times with different parameters (number of threads and vector size).
   By attempting to soften intermittent performance drops/spikes, the program was run 20 times, allowing the gathering of average values and standard deviation.
 
-  At first I thought the increase of threads, given constant vector size, would result on a linear increase of performance. Because each thread has equal load (with at most one more operation), vector addition with 4 threads would ideally run twice faster than that with 2 threads of same size. Thus my expected speedup was of \textit{n} times compared to a fully sequential execution, where n is the number of active threads.
+  At first I thought the increase of threads, given constant vector size, would result on an identical linear increase of performance. Because each thread has roughly equal load, vector addition with 4 threads would ideally run twice faster than that with 2 threads of same size. Thus my expected speedup was of \textit{n} times compared to a fully sequential execution, where n is the number of active threads.
 
   This would certainly not be the case for small vector inputs, given that thread initialisation would be a large overhead.
   Another issue would be executing the program on a single core machine, as threads would never run \textit{truly in parallel} and context switching would be an additinal cost.
@@ -48,7 +48,7 @@
   Dell/AMD quad 12-core (48 cores total), each with specs:\\
   model name: AMD Opteron(tm) Processor 6174 \\
   clock speed: 2.2 GHZ \\
-  cache size: 512 KB \\}. I evaluate this to occur mostly due to the thread initialisation cost. As we can see, the program performs much better with a single thread for this problem size, which means in this case it is quicker to do the whole vector addition sequentially, rather than spending a long time spawning threads which will die after doing few operations.
+  cache size: 512 KB \\}. I evaluate this to occur mostly due to the thread initialisation cost, and partially the time waiting for all threads to complete (join). As we can see, the program performs much better with a single thread for this problem size, which means in this case it is quicker to do the whole vector addition sequentially, rather than spending a long time spawning threads which will die after doing few operations.
 \newpage
 \begin{figure}[t]
 \centerline{%
